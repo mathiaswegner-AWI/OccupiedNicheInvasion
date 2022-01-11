@@ -86,7 +86,7 @@ calcPhaseShift = function(x,y,left_shift,right_shift)
 
 ```
 
-##PART I: Field data
+## PART I: Field data
 This part analyses the field data collected in Königshafen from 2013 until 2019.
 
 
@@ -306,9 +306,10 @@ abline(O_mori_repro_mod, col = 'darkred', lwd = 2, lty = 2)
 ```
 
 
-##Part II: Simultaneous and Sequential infections (Fig 3A)
+## Part II: Simultaneous and Sequential infections (Fig 3A)
 This part analyses the simultaneous and sequential infection data, corresponding to Figure 3
-Simultaneous infections (Fig 3A)
+### Simultaneous infections (Fig 3A)
+
 ```{r simultaneous infections read data, include = F }
 
 #### Import dataset ####
@@ -341,7 +342,7 @@ meanSE = aggregate( infRate2 ~ treatment*Parasite, data = dataSim, se)
 
 
 
-##Sequential Infections (Fig 3B)
+### Sequential Infections (Fig 3B)
 
 ```{r sequenttial infections read data, include = F}
 
@@ -420,7 +421,7 @@ mtext(c('-','Mint','Mint','Mori','Mint','Mori','-','Mori'), side = 1, line = 2, 
 
 ```
 
-##PART III:  Host dependence of infectivity
+## PART III:  Host dependence of infectivity
 
 Tests whether the source species (mussel or oyster) has an effect on the infectitivity of parasite offspring in both species
 
