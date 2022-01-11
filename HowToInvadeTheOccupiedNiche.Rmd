@@ -1,9 +1,16 @@
 ---
 title: "HowToInvadeTheOccupiedNiche_Analyses"
+knit: (function(input_file, encoding) {
+  out_dir <- 'docs';
+  rmarkdown::render(input_file,
+ encoding=encoding,
+ output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
 author: "Mathias Wegner, AWI"
 date: "07/01/2022"
 output: html_document
 ---
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -457,7 +464,7 @@ mtext('Source host', side = 1, line = 3, at = 0)
 
 tests whether the prior presence of other con- or heterospecific infections changes the infection choice when offered an infected vs. an uninfected host
 
-```{r Infection Choice}
+```{r Infection Choice read data, echo = F}
 dataChoice = read.table('InfectionChoice.txt', header =T, stringsAsFactors = T)
 
 #create data set for only mytilus
@@ -481,9 +488,9 @@ mytilus$SecondInfection_prop_sum = mytilus$SecondInfection_inf_prop + mytilus$Se
 
 #data set without previous infections
 mytilus_noPreinf = subset(mytilus,mytilus$pre_infected_inf == 'none')
+```
 
-#hist(mytilus$SecondInfection_difference)
-#hist(mytilus_noPreinf$SecondIntensity_naive)
+```{r Infection Choice analysis}
 # linear model with infection choice parasite species and homologous vs heterologous infection as factor
 mod_hom_het = lm(SecondInfection_prop_difference~ FirstIntensity + SecondInfection * hom_het  , data = mytilus_noPreinf)
 #anova table
@@ -492,6 +499,7 @@ summary(mod_hom_het)
 
 ```
 
+Plot Figure 5
 
 ```{r Figure 5, echo = F}
 #calculate mean and standard error for plotting
