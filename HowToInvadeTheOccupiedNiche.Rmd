@@ -1,0 +1,543 @@
+---
+title: "HowToInvadeTheOccupiedNiche_Analyses"
+author: "Mathias Wegner, AWI"
+date: "07/01/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown of the analyses accompanying the manuscript 'Invading the occupied niche: aggregation behavior gives a generalist parasite the edge over an established specialist' by Marieke E. Feis, Leo Gottschalck, Lena Ruf, Franziska Theising, Felicitas Demann, K. Mathias Wegner. 
+```{r, include = F}
+library(vioplot)
+library(nlme)
+library(lmerTest)
+library(lme4)
+library(car)
+library(multcomp)
+```
+
+
+
+Functions:
+```{r functions}
+
+#defining standard error
+se = function(x)
+{
+	sd(x, na.rm=T)/sqrt(length(x))
+}
+
+#perform phase shift analysis
+# parameters:
+# x, y: numeric vectors for shifted correlation calucation
+# left_shift, right_shift: integers for how many intervals series will be pushed left and right
+# value:
+# a list 1) R2: numric vector of all observed R2 values and 2) models: a list of the corresponding linear models
+calcPhaseShift = function(x,y,left_shift,right_shift)
+{
+  
+  models = list() #list of linear models for each time shift
+  R2 = vector(mode = 'numeric') #vector of the correponding R2-values
+  
+  for(i in left_shift:right_shift)
+  {
+    if(i<0)
+    {
+      this.x = x[1:(length(x)-abs(i))]
+      this.y = y[(abs(i)+1):length(y)]
+    }
+    if(i==0)
+    {
+      this.x = x
+      this.y = y
+    }
+    
+    
+    if(i>0)
+    {
+      this.x = x[(abs(i)+1):length(x)]
+      this.y = y[1:(length(y)-abs(i))]
+    }
+    
+    mod = lm(this.x~this.y)
+    modname = paste('mod',i,sep='_')
+    models[[length(models)+1]] <- mod
+    #print(summary(mod)) 
+    R2 = c(R2,summary(mod)$r.squared)
+    
+    #rho = cor.test(x,y, method = 'spearman')
+    #Rho = c(Rho,rho$estimate)
+    
+  }
+  return(list(R2=R2,models=models))
+}
+
+```
+
+##PART I: Field data
+This part analyses the field data collected in Königshafen from 2013 until 2019.
+
+
+```{r Figure1_data, include = F}
+#Loading data and data manipulation
+data = read.table('Mytilicola_export.txt', header = T)
+data$M_infected_Mint = 0
+data$M_infected_Mint[data$sum_int>0]=1
+
+data$M_infected_Mori = 0
+data$M_infected_Mori[data$sum_ori>0]=1
+
+data$M_infected = 1
+data$M_infected[data$M_infected_Mint == 0 & data$M_infected_Mori == 0] = 0
+
+data$O_infected_Mori = 0
+data$O_infected_Mori[data$O_Mori_sum>0]=1
+
+
+data$propRepro_M_mint   = NA
+data$propRepro_M_mint[complete.cases(data$sum_int) & data$sum_int>0] = 1- I(0.5^(data$sum_int[complete.cases(data$sum_int) & data$sum_int>0]-1))
+data$propRepro_M_mori   = NA
+data$propRepro_M_mori[complete.cases(data$sum_ori) & data$sum_ori>0] = 1- I(0.5^(data$sum_ori[complete.cases(data$sum_ori) & data$sum_ori>0]-1))
+data$propRepro_O_mori   = NA
+data$propRepro_O_mori[complete.cases(data$O_Mori_sum) & data$O_Mori_sum>0] = 1- I(0.5^(data$O_Mori_sum[complete.cases(data$O_Mori_sum) & data$O_Mori_sum>0]-1))
+```
+
+
+```{r Figure1_prevalences, include = F}
+#Calculate mean prevalences and their associated errors
+xmon=c(0,12,24,36,48,60,72,84) #84 = 2020
+M_inf = aggregate(M_infected~monthnum+Year, data = data, mean)
+M_inf$x_month =M_inf$monthnum+xmon[as.numeric(as.factor(M_inf$Year))]
+
+M_Mint_prev = aggregate(M_infected_Mint~monthnum+Year, data = data, mean)
+M_Mint_prev$x_month =M_Mint_prev$monthnum+xmon[as.numeric(as.factor(M_Mint_prev$Year))]
+
+M_Mori_prev = aggregate(M_infected_Mori~monthnum+Year, data = data, mean)
+M_Mori_prev$x_month =M_Mori_prev$monthnum+xmon[as.numeric(as.factor(M_Mint_prev$Year))]
+
+O_Mori_prev = aggregate(O_infected_Mori~monthnum+Year, data = data, mean)
+O_Mori_prev$x_month =O_Mori_prev$monthnum+xmon[as.numeric(as.factor(M_Mint_prev$Year))]
+
+M_Mint_prev$M_infected_Mori = M_Mori_prev$M_infected_Mori
+```
+
+
+Phase shift calculations for Figure 1C,D
+```{r Figure1_phase shift calculations, echo = T}
+#reducing data set to times of co-occurence
+after2015 = subset(M_Mint_prev, M_Mint_prev$Year>2015)
+
+#phase shift
+x_phase = -3:4
+MintMori_shift = calcPhaseShift(after2015$M_infected_Mint,after2015$M_infected_Mori,-3,4)
+bestMod_Index = which(MintMori_shift$R2==max(MintMori_shift$R2))
+bestMod = MintMori_shift$models[[bestMod_Index]]
+print(paste('Best correlation at shift:',x_phase[bestMod_Index]))
+summary(bestMod)
+
+```
+
+Plot Figure 1 B,C,D
+
+```{r Plot 1B,C,D, echo = F}
+layout(matrix(c(1,1,1,1,2,3),2,3))
+plot(M_Mint_prev$M_infected_Mint~M_Mint_prev$x_month,ylab = 'Prevalence', xaxt = 'n', xlab = 'Year', pch = 16, type = 'b', col = 'blue', lwd = 3, ylim = c(0,1), main = 'Prevalence', cex = 1.5)
+axis(1,at = xmon +1, c('2013','2014','2015','2016','2017','2018','2019','2020'), cex = 1.5)
+points(M_Mori_prev$M_infected_Mori~M_Mori_prev$x_month, pch = 16, type = 'b', col = 'red', lwd = 3, cex = 1.5)
+points(O_Mori_prev$O_infected_Mori~O_Mori_prev$x_month, pch = 1, type = 'b', col = 'dark red', lty = 2, lwd = 3, cex = 1.5)
+
+points(M_inf$M_infected ~M_inf$x_month, type = 'l', lty = 2,lwd = 2)
+
+plot(x_phase,MintMori_shift$R2, type = 'l', lwd = 3, main = 'Phase shift (2016-2019)', xlab = 'Phase shift M. intestinalis')
+abline(v=0, lty = 3)
+
+plot(bestMod$model$this.x ~ bestMod$model$this.y,  pch = 16, ylab = 'Prev. M. intestinalis', xlab = 'Prev. M. orientalis', main = 'Correlation +1', cex = 1.5)
+abline(bestMod, lwd = 2)
+
+```
+
+Calculate dispersion and reproductive opportunities
+'M_Mint_abundance' is a sampling interval aggregate of M. intestinalis (Mint) abundances in mussels (M), Mori is M. orientalis, and O is oyster. 
+Different stats are calculated for each host parasite combination (M_Mint, M_mori, O_Mori)
+For all 3 combinations data is merged into M-Mint_abundance
+
+```{r calculate Dispersion, include =F}
+#Dispersion 
+M_Mint_abundance=aggregate(sum_int~monthnum+Year, data = data,mean,na.rm=T)
+M_Mint_var = aggregate(sum_int~monthnum+Year, data = data,var,na.rm=T)
+M_Mint_abundance$var= M_Mint_var$sum_int
+M_Mint_abundance$log_ab = log(M_Mint_abundance$sum_int)
+M_Mint_abundance$log_var = log(M_Mint_var$sum_int)
+M_Mint_abundance$log_var_over_log_ab = M_Mint_abundance$log_var/M_Mint_abundance$log_ab
+M_Mint_abundance$var_over_mean = M_Mint_abundance$var/M_Mint_abundance$sum_int
+M_Mint_abundance$x_month=M_Mint_prev$x_month
+
+
+
+
+M_Mori_abundance =aggregate(sum_ori~monthnum+Year, data = data,mean,na.rm=T)
+M_Mori_var = aggregate(sum_ori~monthnum+Year, data = data,var,na.rm=T)
+M_Mori_abundance$var= M_Mori_var$sum_ori
+M_Mori_var_over_mean = M_Mori_abundance$var/M_Mori_abundance$sum_ori
+M_Mori_var_over_mean=c(rep(NA,25),M_Mori_var_over_mean[4:14])
+M_Mint_abundance$M_Mori_var_over_mean=M_Mori_var_over_mean #merging all data into M-Mint_abundance
+
+
+
+O_Mori_abundance =aggregate(O_Mori_sum~monthnum+Year, data = data,mean,na.rm=T)
+O_Mori_var =aggregate(O_Mori_sum~monthnum+Year, data = data,var,na.rm=T)
+O_Mori_abundance$var=O_Mori_var$O_Mori_sum
+O_Mori_abundance$var_over_mean = O_Mori_abundance$var/O_Mori_abundance$O_Mori_sum
+O_Mori_var_over_mean = c(rep(NA,26),O_Mori_abundance$var_over_mean[2:11])
+M_Mint_abundance$O_Mori_var_over_mean = O_Mori_var_over_mean
+
+
+#ReproSuccess
+M_Mint_Repro = aggregate(propRepro_M_mint~monthnum+Year, data = data,mean,na.rm=T)
+M_Mori_Repro = aggregate(propRepro_M_mori~monthnum+Year, data = data,mean,na.rm=T)
+O_Mori_Repro = aggregate(propRepro_O_mori~monthnum+Year, data = data,mean,na.rm=T)
+
+M_Mint_abundance$repro_M_Mint = M_Mint_Repro$propRepro_M_mint #merging all data into M-Mint_abundance
+M_Mint_abundance$repro_M_Mori = c(rep(NA,26),M_Mori_Repro$propRepro_M_mori)
+M_Mint_abundance$repro_O_Mori = c(rep(NA,26),O_Mori_Repro$propRepro_O_mori)
+
+means = c(M_Mint_abundance$sum_int,M_Mori_abundance$sum_ori,O_Mori_abundance$O_Mori_sum)
+vars = c(M_Mint_var$sum_int,M_Mori_var$sum_ori,O_Mori_var$O_Mori_sum)
+repro = c(M_Mint_Repro$propRepro_M_mint, NA,NA,NA,M_Mori_Repro$propRepro_M_mori,NA,O_Mori_Repro$propRepro_O_mori)
+hostPar = c(rep('M_Mint',length(M_Mint_abundance[[1]])),rep('M_Mori',length(M_Mori_abundance[[1]])),rep('O_Mori',length(O_Mori_abundance[[1]])))
+
+#data frame for dispersion parameters
+disp =data.frame(means=means,vars=vars,hostPar=hostPar, repro = repro)
+disp=subset(disp,disp$vars>0)
+disp$ln_mean =log(disp$means)
+disp$ln_var = log(disp$vars)
+disp$varToMean = disp$vars/disp$means
+
+```
+
+
+Analysis for Figure 2B: Aggregation in different parasite-host combinations
+
+```{r model Fig2b, echo = T}
+#analysis
+#test for species differences accounting for different variances
+fit.gls <- gls(varToMean~hostPar, weights = varIdent(form = ~ 1 | hostPar), data = disp)
+summary(fit.gls)
+anova(fit.gls)
+```
+
+
+Analysis Figure 2C: Chances of encountering a mate
+
+```{r model Fig2C, echo = T}
+#### prop Repro 2C
+#regression before M. orientalis arrival in 2016
+M_Mint_abundance_before = subset(M_Mint_abundance,M_Mint_abundance$x_month < 35)
+M_Mint_abundance_after = subset(M_Mint_abundance,M_Mint_abundance$x_month > 35)
+
+M_mint_repro_mod_before = lm(M_Mint_abundance_before$repro_M_Mint~ M_Mint_abundance_before$x_month)
+print(summary(M_mint_repro_mod_before))
+
+M_mint_repro_mod_after = lm(M_Mint_abundance_after$repro_M_Mint~ M_Mint_abundance_after$x_month)
+print(summary(M_mint_repro_mod_after))
+
+
+M_mori_repro_mod = lm(repro_M_Mori~x_month, data = M_Mint_abundance)
+print(summary(M_mori_repro_mod))
+
+
+O_mori_repro_mod = lm(repro_O_Mori~x_month, data = M_Mint_abundance)
+print(summary(O_mori_repro_mod))
+
+```
+
+Plotting of Figure 2
+
+
+```{r plot Figure2, echo = F}
+#Intensity distributions 2A
+layout(matrix(c(1,2,3,4,4,4,4,4,4,5,5,5,5,5,5),3,5))
+par(mar=c(5,4,3,2))
+
+hist(data$sum_int[complete.cases(data$sum_int) & data$sum_int>0], col = 'blue',breaks = 0:46, xlab = '', ylab = '',main = 'M. intestinalis in mussel')
+abline(v=mean(data$sum_int[complete.cases(data$sum_int) & data$sum_int>0]), col = 'blue', lty = 2)
+text(25,100,paste('n = ',length(data$sum_int[complete.cases(data$sum_int) & data$sum_int>0])))
+
+hist(data$sum_ori[complete.cases(data$sum_ori) & data$sum_ori >0], col = 'red',breaks = 0:46,xlab = '', ylab = '', main = 'M. orientalis in mussel')
+abline(v=mean(data$sum_ori[complete.cases(data$sum_ori) & data$sum_ori >0]), col = 'red', lty = 2)
+text(25,30,paste('n = ',length(data$sum_ori[complete.cases(data$sum_ori) & data$sum_ori >0])))
+
+
+hist(data$O_Mori_sum[complete.cases(data$O_Mori_sum) & data$O_Mori_sum>0], col = 'darkred',breaks = 0:46,xlab = '', ylab = '', main = 'M. orientalis in oyster')
+abline(v=mean(data$O_Mori_sum[complete.cases(data$O_Mori_sum) & data$O_Mori_sum>0]), col = 'darkred', lty = 2)
+text(25,10,paste('n = ',length(data$O_Mori_sum[complete.cases(data$O_Mori_sum) & data$O_Mori_sum>0])))
+
+# Variance to mean plot 2B
+vioplot(disp$varToMean~disp$hostPar, col = c('blue','red','darkred'), ylab = 'Variance to mean ratio (VMR)', main = 'Aggregation of parasites', xlab='Host - Parasite Combination', cex = 1.3)
+abline(h=1, lty = 2, lwd = 2)
+
+#plot repro success 2C
+plot(M_Mint_abundance$x_month,M_Mint_abundance$repro_M_Mint, xaxt = 'n', ylab = 'Likelihood of finding a mate', xlab = 'Year', type = 'p', pch = 16, col = 'blue', main = 'Mate finding')
+axis(1,at = xmon [2:8], c('2013','2014','2015','2016','2017','2018','2019'))
+
+#adding regression lines
+points(M_Mint_abundance_before$x_month[c(1,25)],predict(M_mint_repro_mod_before)[c(1,25)], type = 'l',lwd = 2, col = 'blue', lty = 2)
+points(M_Mint_abundance_after$x_month[c(1,11)],predict(M_mint_repro_mod_after)[c(1,11)], type = 'l',lwd = 2, col = 'blue', lty = 2)
+
+#Mori in mussel
+points(repro_M_Mori~x_month, data = M_Mint_abundance, col = 'red', pch = 16)
+abline(M_mori_repro_mod, col = 'red', lwd = 2, lty = 2)
+
+#Mori in oyster
+points(repro_O_Mori~x_month, data = M_Mint_abundance, col = 'dark red', pch = 1, cex =1.3, lwd = 1.5)
+abline(O_mori_repro_mod, col = 'darkred', lwd = 2, lty = 2)
+```
+
+
+##Part II: Simultaneous and Sequential infections (Fig 3A)
+This part analyses the simultaneous and sequential infection data, corresponding to Figure 3
+Simultaneous infections (Fig 3A)
+```{r simultaneous infections read data, include = F }
+
+#### Import dataset ####
+dataSim = read.table('simultaneousInfection.txt', header = T)
+dataSim$infRate2 = dataSim$Parasite_count/dataSim$exposureDose
+
+```
+
+
+
+```{r simultaneous infections analyses}
+#############################################################################################################
+# test by binomial GLMM
+#############################################################################################################
+
+mod = glmer(cbind(Parasite_count,(exposureDose-Parasite_count))~Parasite * treatment + (1|Mussel_name), data = dataSim, family = 'binomial',control=glmerControl(optimizer="bobyqa",optCtrl=list(maxfun=2e5)))
+print(summary(mod))
+
+#############################################################################################################
+# pairwise comparisons
+#############################################################################################################
+dataSim$PxT = interaction(dataSim$Parasite,dataSim$treatment)
+compMod = glmer(cbind(Parasite_count,(exposureDose-Parasite_count))~PxT + (1|Mussel_name), data = dataSim, family = 'binomial',control=glmerControl(optimizer="bobyqa",optCtrl=list(maxfun=2e5)))
+print(summary(compMod))
+print(summary(glht(compMod, linfct = mcp(PxT = 'Tukey'))))
+
+meanInf = aggregate( infRate2 ~ treatment*Parasite, data = dataSim, mean)
+meanSE = aggregate( infRate2 ~ treatment*Parasite, data = dataSim, se)
+```
+
+
+
+##Sequential Infections (Fig 3B)
+
+```{r sequenttial infections read data, include = F}
+
+
+#############################################################################################################
+#############################################################################################################
+#
+#                               Sequential Infections
+#
+#############################################################################################################
+#############################################################################################################
+
+
+#read data
+dataSeq = read.table('SequentialInfection.txt', header =T)
+dataSeq$Mussel = factor(dataSeq$Mussel)
+dataSeq$HomHet = factor(dataSeq$HomHet, levels = c('single','homolog','heterolog'))
+
+#calculate Infection rate
+dataSeq$infRate = dataSeq$inf/dataSeq$dose
+
+
+dataSeq$Inf_combo = factor(dataSeq$Inf_combo, levels = c("Mintcontrol","controlMint","MintMint","MintMori","MoriMint","MoriMori","Moricontrol","controlMori"))
+dataSeq$infection = 'single'
+dataSeq$infection[dataSeq$HomHet == 'homolog' | dataSeq$HomHet =='heterolog'] = 'coinfection'
+```
+
+```{r sequenttial infections analysis}
+#############################################################################################################
+# test by binomial GLMM
+#############################################################################################################
+
+modSeq = glmer(cbind(inf,(dose-inf))~ Parasite * round * HomHet + (1|Mussel), data = dataSeq, family = 'binomial',control=glmerControl(optimizer="bobyqa",optCtrl=list(maxfun=2e5)))
+#summary(modSeq)
+Anova(modSeq, type = 'III')
+```
+
+### Pairwise comparisons of Sequential infections
+
+```{r sequential infections - pairwise, echo = F}
+#############################################################################################################
+# pairwise comparisons
+#############################################################################################################
+dataSeq$PxRxHH = interaction(dataSeq$Parasite, dataSeq$round, dataSeq$HomHet)
+dataSeq$PxRxHH = as.character(dataSeq$PxRxHH)
+dataSeq$PxRxHH[dataSeq$PxRxHH == 'Mint.inf1.homolog'] = 'Mint.homolog'
+dataSeq$PxRxHH[dataSeq$PxRxHH == 'Mint.inf2.homolog'] = 'Mint.homolog'
+dataSeq$PxRxHH[dataSeq$PxRxHH == 'Mori.inf1.homolog'] = 'Mori.homolog'
+dataSeq$PxRxHH[dataSeq$PxRxHH == 'Mori.inf2.homolog'] = 'Mori.homolog'
+dataSeq$PxRxHH = factor(dataSeq$PxRxHH)
+
+compModSeq = glmer(cbind(inf,(dose-inf))~PxRxHH + (1|Mussel), data = dataSeq, family = 'binomial',control=glmerControl(optimizer="bobyqa",optCtrl=list(maxfun=2e5)))
+print(summary(compModSeq))
+print(summary(glht(compModSeq, linfct = mcp(PxRxHH = 'Tukey'))))
+
+```
+
+Plotting Figure 3
+
+```{r Figure3, echo = F}
+layout(matrix(c(1,2,2),1,3))
+par(mar=c(5,6,3,0))
+vioplot(infRate2 ~ treatment, data=dataSim[dataSim$Parasite == 'Mint',], col = 'blue', ylim = c(0,1), xlim = c(0.5,4), xaxt='n', xlab = '', ylab = '', main = 'Simultaneous Infection', cex.axis = 1.5, cex.lab = 1.5, cex.main = 1.5, cex = 1.5)
+vioplot(infRate2 ~ treatment, data=dataSim[dataSim$Parasite == 'Mori',], add = T, col = 'red', at = c(2.5,3.5), xaxt = 'n', cex = 1.5)
+axis(1,at = c(1,2.25,3.5), labels = c("","",""))
+mtext(c('Mint','Mint-Mori', 'Mori'), side = 1,line = 1, at = c(1,2.25,3.5))
+mtext("Infection rate", side = 2, line = 3, cex = 1.5)
+
+par(mar=c(5,0,3,1))
+x=vioplot(infRate ~ factor(Inf_combo,levels = c("Mintcontrol","controlMint","MintMint","MintMori","MoriMint")), data=dataSeq[dataSeq$Parasite == 'Mint',], col = 'blue', ylim = c(0,1), at=c(1,2,3.5,4.5,6.5), xlim = c(0.5,10.5), xaxt = 'n', main = 'Sequential Infections', ylab="", xlab ="", cex = 1.5, cex.main = 1.5, yaxt ='n')
+y=vioplot(infRate ~ factor(Inf_combo,levels = c("MintMori","MoriMint","MoriMori","Moricontrol","controlMori")), data=dataSeq[dataSeq$Parasite == 'Mori',], col = 'red', ylim = c(0,1), add=T,at=c(5,6,7.5,9,10), xaxt = 'n', cex = 1.5)
+axis(1,at = c(1,2,3.5,4.75,6.25,7.5,9,10), labels = c('','','','','','','',''))
+mtext(c('Mint','-','Mint','Mint','Mori','Mori','Mori','-'),side = 1, line = 1, at = c(1,2,3.5,4.75,6.25,7.5,9,10),cex = 1)
+mtext(c('-','Mint','Mint','Mori','Mint','Mori','-','Mori'), side = 1, line = 2, at = c(1,2,3.5,4.75,6.25,7.5,9,10), cex = 1)
+
+
+```
+
+##PART III:  Host dependence of infectivity
+
+Tests whether the source species (mussel or oyster) has an effect on the infectitivity of parasite offspring in both species
+
+```{r host source dependence read data, include =F}
+dataHost = read.table('hostSource.txt',header =T, stringsAsFactors = T)
+dataHost$infCombo = paste(dataHost$Treatment,dataHost$HostSpecies,sep = '')
+dataHost$infCombo = factor(dataHost$infCombo, levels = c('MiM_edulis','MiC_gigas','MoMeM_edulis','MoMeC_gigas','MoCgM_edulis','MoCgC_gigas'))
+
+dataHostNoMiCG = subset(dataHost,dataHost$infCombo != 'MiC_gigas')
+```
+
+```{r host source dependence analysis}
+parental.mod = glm(cbind(M_Total,(Cop_infiltrated-M_Total))~Treatment, data = dataHostNoMiCG, family = 'binomial')
+summary(parental.mod)
+anova(parental.mod,test = 'LRT')
+
+dataHost_Mori = subset(dataHostNoMiCG,dataHostNoMiCG$Treatment != 'Mi')
+hostMori.mod = glm(cbind(M_Total,(Cop_infiltrated-M_Total))~Treatment * HostSpecies, data = dataHost_Mori, family = 'binomial')
+summary(hostMori.mod)
+
+
+```
+
+Plotting Figure 4
+
+```{r Figure 4, echo = F}
+vioplot(inf_rate ~ infCombo, data = dataHost, col = c('blue','blue','red','dark red','red','dark red'), at = c(1,2,3.5,4.5,6,7), xaxt = 'n', xlab ='', ylab = 'Infection rate')
+axis(1, at =c(1,2,3.5,4.5,6,7), labels= rep('',6))
+mtext(c('M.int','M.int','M.ori','M.ori','M.ori','M.ori'),side = 1, line = 1,  at = c(1,2,3.5,4.5,6,7),cex = 1,col = c('blue','blue','red','dark red','red','dark red'))
+mtext('Parasite', side = 1, line = 1, at = -0.0)
+
+mtext(c('mussel','mussel','mussel','oyster','mussel','oyster'),side = 1, line = 2,  at = c(1,2,3.5,4.5,6,7),cex = 1,col = c('blue','blue','blue','red','blue','red'))
+mtext('Infection host', side = 1, line = 2, at = -0.0)
+
+mtext(c('mussel','oyster','mussel','mussel','oyster','oyster'),side = 1, line = 3,  at = c(1,2,3.5,4.5,6,7),cex = 1,col = c('blue','red','blue','blue','red','red'))
+mtext('Source host', side = 1, line = 3, at = 0)
+
+```
+
+## PART IV: Infection preference
+
+tests whether the prior presence of other con- or heterospecific infections changes the infection choice when offered an infected vs. an uninfected host
+
+```{r Infection Choice}
+dataChoice = read.table('InfectionChoice.txt', header =T, stringsAsFactors = T)
+
+#create data set for only mytilus
+mytilus = subset(dataChoice,dataChoice$Host=='Mytilus')
+mytilus = subset(mytilus, mytilus$dead_inf =="alive" & mytilus$dead_naive == "alive")
+mytilus$checkSum = mytilus$SecondIntensity_inf + mytilus$SecondIntensity_naive #max = 23 passt
+
+#calculate proportions of infections
+mytilus$FirstInfection_prop = mytilus$FirstIntensity/mytilus$FirstIngested
+mytilus$SecondInfection_prop = (mytilus$SecondIntensity_inf + mytilus$SecondIntensity_naive)/mytilus$SecondIngested
+mytilus$SecondInfection_inf_prop = mytilus$SecondIntensity_inf/mytilus$SecondIngested
+mytilus$SecondInfection_naive_prop = mytilus$SecondIntensity_naive/mytilus$SecondIngested
+
+
+#calculate difference between proportions inf-naive
+mytilus$SecondInfection_prop_difference = mytilus$SecondInfection_inf_prop - mytilus$SecondInfection_naive_prop
+
+mytilus$SecondInfection_difference = mytilus$SecondIntensity_inf - mytilus$SecondIntensity_naive
+
+mytilus$SecondInfection_prop_sum = mytilus$SecondInfection_inf_prop + mytilus$SecondInfection_naive_prop
+
+#data set without previous infections
+mytilus_noPreinf = subset(mytilus,mytilus$pre_infected_inf == 'none')
+
+#hist(mytilus$SecondInfection_difference)
+#hist(mytilus_noPreinf$SecondIntensity_naive)
+# linear model with infection choice parasite species and homologous vs heterologous infection as factor
+mod_hom_het = lm(SecondInfection_prop_difference~ FirstIntensity + SecondInfection * hom_het  , data = mytilus_noPreinf)
+#anova table
+anova(mod_hom_het)
+summary(mod_hom_het)
+
+```
+
+
+```{r Figure 5, echo = F}
+#calculate mean and standard error for plotting
+mean_dif = aggregate(SecondInfection_prop_difference~FirstInfection * SecondInfection, data = mytilus_noPreinf, mean)
+se_dif = aggregate(SecondInfection_prop_difference~FirstInfection * SecondInfection, data = mytilus_noPreinf, se)
+
+mean_sum = aggregate(SecondInfection_prop_sum~FirstInfection * SecondInfection, data = mytilus_noPreinf, mean)
+se_sum = aggregate(SecondInfection_prop_sum~FirstInfection * SecondInfection, data = mytilus_noPreinf, se)
+
+#make a bar plot, x = gives the middle of each bar on the x-axis
+par(mar=c(5,5,3,2)) #increases the margins
+x=barplot(mean_dif$SecondInfection_prop_difference, ylim = c(-0.3,0.5), col = c( 'blue', 'blue','red','red'), density = c(NA,30,30,NA))
+abline(h=0) #draws horizontal line at 0
+#add error bars
+arrows(x,mean_dif$SecondInfection_prop_difference - se_dif$SecondInfection_prop_difference, x , mean_dif$SecondInfection_prop_difference + se_dif$SecondInfection_prop_difference, length = 0)
+
+meanFirstRates = aggregate(FirstInfection_prop ~ FirstInfection + SecondInfection, data = mytilus_noPreinf, mean)
+meanSecondRates = aggregate(SecondInfection_prop ~ FirstInfection + SecondInfection, data = mytilus_noPreinf, mean)
+
+
+#add axis labels
+mtext('Primary infection',side =1, line = 1, at = 0, cex = 1)
+mtext('Preference infection',side =1, line = 2, at = 0, cex = 1)
+mtext(c(paste('M. int (',round(meanFirstRates$FirstInfection_prop[1],2),')', sep = ""),
+        paste('M. ori (',round(meanFirstRates$FirstInfection_prop[2],2),')', sep = ""),
+        paste('M. int (',round(meanFirstRates$FirstInfection_prop[3],2),')', sep = ""),
+        paste('M. ori (',round(meanFirstRates$FirstInfection_prop[4],2),')', sep = "")),
+        side =1, line = 1, at = x, col = c('blue','red','blue','red'))
+mtext(c(paste('M. int (',round(meanSecondRates$SecondInfection_prop[1],2),')', sep = ""),
+        paste('M. int (',round(meanSecondRates$SecondInfection_prop[2],2),')', sep = ""),
+        paste('M. ori (',round(meanSecondRates$SecondInfection_prop[3],2),')', sep = ""),
+        paste('M. int (',round(meanSecondRates$SecondInfection_prop[4],2),')', sep = "")),
+        side =1, line = 2, at = x, col = c('blue','blue','red','red'))
+mtext('infected', side = 2, line = 2, at = 0.25)
+mtext('not infected', side = 2, line = 2, at = -0.15)
+mtext('Preference', side = 2, line = 3, at = 0, cex =1.2)
+
+#add arrows to margin 
+arrows(-0.3,0,-0.3,0.2, xpd = T)
+arrows(-0.3,0,-0.3,-0.1, xpd = T)
+arrows(-0.35,0,-0.25,0,length = 0, xpd =T)
+
+
+
+```
+
+
+
+
