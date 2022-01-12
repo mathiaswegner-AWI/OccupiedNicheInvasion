@@ -113,7 +113,7 @@ summary(bestMod)
 Plot Figure 1
 B,C,D
 
-![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/Plot%201B,C,D-1.png)<!-- -->
+![](/README_files/figure-gfm/Plot%201B,C,D-1.png)<!-- -->
 
 Calculate dispersion and reproductive opportunities ‘M\_Mint\_abundance’
 is a sampling interval aggregate of M. intestinalis (Mint) abundances in
@@ -279,7 +279,7 @@ print(summary(O_mori_repro_mod))
 Plotting of Figure
 2
 
-![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/plot%20Figure2-1.png)<!-- -->
+![](/README_files/figure-gfm/plot%20Figure2-1.png)<!-- -->
 
 ## Part II: Simultaneous and Sequential infections (Fig 3A)
 
@@ -627,7 +627,7 @@ Plotting Figure
 
     ## [1] "Using c(0.5,10.5) as input for xlim, note that default values for these dimensions are c(0.5,7)"
 
-![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/Figure3-1.png)<!-- -->
+![](/README_files/figure-gfm/Figure3-1.png)<!-- -->
 
 ## PART III: Host dependence of infectivity
 
@@ -719,7 +719,7 @@ summary(hostMori.mod)
 Plotting Figure
 4
 
-![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/Figure%204-1.png)<!-- -->
+![](/README_files/figure-gfm/Figure%204-1.png)<!-- -->
 
 ## PART IV: Infection preference
 
@@ -783,4 +783,4 @@ summary(mod_hom_het)
 Plot Figure
 5
 
-![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/Figure%205-1.png)<!-- -->
+![](/README_files/figure-gfm/Figure%205-1.png)<!-- -->
