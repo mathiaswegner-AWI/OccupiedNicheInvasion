@@ -854,4 +854,8 @@ Plot Figure 5
 
 
 
+<<<<<<< HEAD
 
+=======
+"HowToInvadeTheOccupiedNiche.Rmd" is an R Markdown of the analyses accompanying the manuscript 'Invading the occupied niche: aggregation behavior gives a generalist parasite the edge over an established specialist' by Marieke E. Feis, Leo Gottschalck, Lena Ruf, Franziska Theising, Felicitas Demann, K. Mathias Wegner. See docs/index.html for html knit of the makrdown file.
+>>>>>>> 46e2c018ec383b7dfdd350445d6e5a5920d5a0d1
