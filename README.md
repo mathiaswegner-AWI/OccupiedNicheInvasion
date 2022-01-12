@@ -392,11 +392,11 @@ print(summary(glht(compMod, linfct = mcp(PxT = 'Tukey'))))
     ## Linear Hypotheses:
     ##                              Estimate Std. Error z value Pr(>|z|)    
     ## Mori.coinf - Mint.coinf == 0 -1.95992    0.30020  -6.529  < 1e-04 ***
-    ## Mint.inf - Mint.coinf == 0   -0.11576    0.42047  -0.275 0.992430    
-    ## Mori.inf - Mint.coinf == 0   -2.00388    0.46620  -4.298  < 1e-04 ***
-    ## Mint.inf - Mori.coinf == 0    1.84416    0.45229   4.077 0.000256 ***
+    ## Mint.inf - Mint.coinf == 0   -0.11576    0.42047  -0.275 0.992431    
+    ## Mori.inf - Mint.coinf == 0   -2.00388    0.46620  -4.298 0.000104 ***
+    ## Mint.inf - Mori.coinf == 0    1.84416    0.45229   4.077 0.000238 ***
     ## Mori.inf - Mori.coinf == 0   -0.04397    0.48955  -0.090 0.999730    
-    ## Mori.inf - Mint.inf == 0     -1.88812    0.44834  -4.211 0.000168 ***
+    ## Mori.inf - Mint.inf == 0     -1.88812    0.44834  -4.211 0.000135 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -510,6 +510,8 @@ Anova(modSeq, type = 'III')
     ## Warning in RET$pfunction("adjusted", ...): Completion with error > abseps
     
     ## Warning in RET$pfunction("adjusted", ...): Completion with error > abseps
+    
+    ## Warning in RET$pfunction("adjusted", ...): Completion with error > abseps
 
     ## 
     ##   Simultaneous Tests for General Linear Hypotheses
@@ -569,50 +571,50 @@ Anova(modSeq, type = 'III')
     ## Mori.inf2.single - Mori.inf1.single == 0       -0.81435    0.45388  -1.794
     ## Mori.inf2.single - Mori.inf2.heterolog == 0    -0.23746    0.48179  -0.493
     ##                                                Pr(>|z|)    
-    ## Mint.inf1.heterolog - Mint.homolog == 0         0.10994    
-    ## Mint.inf1.single - Mint.homolog == 0            0.14597    
+    ## Mint.inf1.heterolog - Mint.homolog == 0         0.10904    
+    ## Mint.inf1.single - Mint.homolog == 0            0.14623    
     ## Mint.inf2.heterolog - Mint.homolog == 0         1.00000    
     ## Mint.inf2.single - Mint.homolog == 0            0.99651    
-    ## Mori.homolog - Mint.homolog == 0                0.88630    
-    ## Mori.inf1.heterolog - Mint.homolog == 0         0.43206    
+    ## Mori.homolog - Mint.homolog == 0                0.88602    
+    ## Mori.inf1.heterolog - Mint.homolog == 0         0.43236    
     ## Mori.inf1.single - Mint.homolog == 0            1.00000    
-    ## Mori.inf2.heterolog - Mint.homolog == 0         0.95142    
-    ## Mori.inf2.single - Mint.homolog == 0            0.65733    
+    ## Mori.inf2.heterolog - Mint.homolog == 0         0.95144    
+    ## Mori.inf2.single - Mint.homolog == 0            0.65734    
     ## Mint.inf1.single - Mint.inf1.heterolog == 0     1.00000    
-    ## Mint.inf2.heterolog - Mint.inf1.heterolog == 0  0.06721 .  
-    ## Mint.inf2.single - Mint.inf1.heterolog == 0     0.01082 *  
-    ## Mori.homolog - Mint.inf1.heterolog == 0         0.00124 ** 
+    ## Mint.inf2.heterolog - Mint.inf1.heterolog == 0  0.06729 .  
+    ## Mint.inf2.single - Mint.inf1.heterolog == 0     0.01106 *  
+    ## Mori.homolog - Mint.inf1.heterolog == 0         0.00116 ** 
     ## Mori.inf1.heterolog - Mint.inf1.heterolog == 0  < 0.001 ***
-    ## Mori.inf1.single - Mint.inf1.heterolog == 0     0.10261    
+    ## Mori.inf1.single - Mint.inf1.heterolog == 0     0.10248    
     ## Mori.inf2.heterolog - Mint.inf1.heterolog == 0  < 0.001 ***
     ## Mori.inf2.single - Mint.inf1.heterolog == 0     < 0.001 ***
-    ## Mint.inf2.heterolog - Mint.inf1.single == 0     0.09112 .  
-    ## Mint.inf2.single - Mint.inf1.single == 0        0.01398 *  
-    ## Mori.homolog - Mint.inf1.single == 0            0.00131 ** 
+    ## Mint.inf2.heterolog - Mint.inf1.single == 0     0.09104 .  
+    ## Mint.inf2.single - Mint.inf1.single == 0        0.01447 *  
+    ## Mori.homolog - Mint.inf1.single == 0            0.00132 ** 
     ## Mori.inf1.heterolog - Mint.inf1.single == 0     < 0.001 ***
-    ## Mori.inf1.single - Mint.inf1.single == 0        0.13779    
-    ## Mori.inf2.heterolog - Mint.inf1.single == 0     0.00481 ** 
+    ## Mori.inf1.single - Mint.inf1.single == 0        0.13773    
+    ## Mori.inf2.heterolog - Mint.inf1.single == 0     0.00472 ** 
     ## Mori.inf2.single - Mint.inf1.single == 0        < 0.001 ***
     ## Mint.inf2.single - Mint.inf2.heterolog == 0     0.99997    
-    ## Mori.homolog - Mint.inf2.heterolog == 0         0.98626    
-    ## Mori.inf1.heterolog - Mint.inf2.heterolog == 0  0.13952    
+    ## Mori.homolog - Mint.inf2.heterolog == 0         0.98629    
+    ## Mori.inf1.heterolog - Mint.inf2.heterolog == 0  0.14026    
     ## Mori.inf1.single - Mint.inf2.heterolog == 0     1.00000    
-    ## Mori.inf2.heterolog - Mint.inf2.heterolog == 0  0.99617    
-    ## Mori.inf2.single - Mint.inf2.heterolog == 0     0.90735    
+    ## Mori.inf2.heterolog - Mint.inf2.heterolog == 0  0.99616    
+    ## Mori.inf2.single - Mint.inf2.heterolog == 0     0.90747    
     ## Mori.homolog - Mint.inf2.single == 0            0.99987    
-    ## Mori.inf1.heterolog - Mint.inf2.single == 0     0.93797    
-    ## Mori.inf1.single - Mint.inf2.single == 0        0.99843    
+    ## Mori.inf1.heterolog - Mint.inf2.single == 0     0.93800    
+    ## Mori.inf1.single - Mint.inf2.single == 0        0.99844    
     ## Mori.inf2.heterolog - Mint.inf2.single == 0     0.99999    
-    ## Mori.inf2.single - Mint.inf2.single == 0        0.99313    
+    ## Mori.inf2.single - Mint.inf2.single == 0        0.99311    
     ## Mori.inf1.heterolog - Mori.homolog == 0         0.99849    
-    ## Mori.inf1.single - Mori.homolog == 0            0.92198    
+    ## Mori.inf1.single - Mori.homolog == 0            0.92202    
     ## Mori.inf2.heterolog - Mori.homolog == 0         1.00000    
     ## Mori.inf2.single - Mori.homolog == 0            1.00000    
-    ## Mori.inf1.single - Mori.inf1.heterolog == 0     0.50325    
-    ## Mori.inf2.heterolog - Mori.inf1.heterolog == 0  0.99652    
+    ## Mori.inf1.single - Mori.inf1.heterolog == 0     0.50281    
+    ## Mori.inf2.heterolog - Mori.inf1.heterolog == 0  0.99653    
     ## Mori.inf2.single - Mori.inf1.heterolog == 0     0.99999    
-    ## Mori.inf2.heterolog - Mori.inf1.single == 0     0.96920    
-    ## Mori.inf2.single - Mori.inf1.single == 0        0.72858    
+    ## Mori.inf2.heterolog - Mori.inf1.single == 0     0.96917    
+    ## Mori.inf2.single - Mori.inf1.single == 0        0.72830    
     ## Mori.inf2.single - Mori.inf2.heterolog == 0     0.99997    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
