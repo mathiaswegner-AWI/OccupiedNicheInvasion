@@ -430,10 +430,21 @@ Tests whether the source species (mussel or oyster) has an effect on the infecti
 dataHost = read.table('hostSource.txt',header =T, stringsAsFactors = T)
 dataHost$infCombo = paste(dataHost$Treatment,dataHost$HostSpecies,sep = '')
 dataHost$infCombo = factor(dataHost$infCombo, levels = c('MiM_edulis','MiC_gigas','MoMeM_edulis','MoMeC_gigas','MoCgM_edulis','MoCgC_gigas'))
+dataHost$ParasiteSpecies = "Mo"
+dataHost$ParasiteSpecies[dataHost$Treatment == "Mi"] = "Mi"
+dataHost$HostParasite = interaction(dataHost$ParasiteSpecies,dataHost$HostSpecies)
 
 dataHostNoMiCG = subset(dataHost,dataHost$infCombo != 'MiC_gigas')
+dataHostNoMiCG$HostParasite = factor(dataHostNoMiCG$HostParasite, levels = c("Mi.M_edulis","Mo.M_edulis","Mo.C_gigas"))
 ```
 
+Testing for cost of generalism
+```{r infection success lower in both host species}
+parasite.mod = glm(cbind(M_Total,(Cop_infiltrated-M_Total))~HostParasite, data = dataHostNoMiCG, family = 'binomial')
+summary(parasite.mod)
+```
+
+Testing for host source dependence
 ```{r host source dependence analysis}
 parental.mod = glm(cbind(M_Total,(Cop_infiltrated-M_Total))~Treatment, data = dataHostNoMiCG, family = 'binomial')
 summary(parental.mod)
@@ -454,10 +465,10 @@ axis(1, at =c(1,2,3.5,4.5,6,7), labels= rep('',6))
 mtext(c('M.int','M.int','M.ori','M.ori','M.ori','M.ori'),side = 1, line = 1,  at = c(1,2,3.5,4.5,6,7),cex = 1,col = c('blue','blue','red','dark red','red','dark red'))
 mtext('Parasite', side = 1, line = 1, at = -0.0)
 
-mtext(c('mussel','mussel','mussel','oyster','mussel','oyster'),side = 1, line = 2,  at = c(1,2,3.5,4.5,6,7),cex = 1,col = c('blue','blue','blue','red','blue','red'))
+mtext(c('mussel','oyster','mussel','oyster','mussel','oyster'),side = 1, line = 2,  at = c(1,2,3.5,4.5,6,7),cex = 1,col = c('blue','blue','blue','red','blue','red'))
 mtext('Infection host', side = 1, line = 2, at = -0.0)
 
-mtext(c('mussel','oyster','mussel','mussel','oyster','oyster'),side = 1, line = 3,  at = c(1,2,3.5,4.5,6,7),cex = 1,col = c('blue','red','blue','blue','red','red'))
+mtext(c('mussel','mussel','mussel','mussel','oyster','oyster'),side = 1, line = 3,  at = c(1,2,3.5,4.5,6,7),cex = 1,col = c('blue','red','blue','blue','red','red'))
 mtext('Source host', side = 1, line = 3, at = 0)
 
 ```

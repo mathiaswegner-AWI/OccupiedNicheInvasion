@@ -113,7 +113,7 @@ summary(bestMod)
 Plot Figure 1
 B,C,D
 
-![](/README_files/figure-gfm/Plot%201B,C,D-1.png)<!-- -->
+![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/Plot%201B,C,D-1.png)<!-- -->
 
 Calculate dispersion and reproductive opportunities ‘M\_Mint\_abundance’
 is a sampling interval aggregate of M. intestinalis (Mint) abundances in
@@ -279,7 +279,7 @@ print(summary(O_mori_repro_mod))
 Plotting of Figure
 2
 
-![](/README_files/figure-gfm/plot%20Figure2-1.png)<!-- -->
+![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/plot%20Figure2-1.png)<!-- -->
 
 ## Part II: Simultaneous and Sequential infections (Fig 3A)
 
@@ -392,11 +392,11 @@ print(summary(glht(compMod, linfct = mcp(PxT = 'Tukey'))))
     ## Linear Hypotheses:
     ##                              Estimate Std. Error z value Pr(>|z|)    
     ## Mori.coinf - Mint.coinf == 0 -1.95992    0.30020  -6.529  < 1e-04 ***
-    ## Mint.inf - Mint.coinf == 0   -0.11576    0.42047  -0.275 0.992431    
-    ## Mori.inf - Mint.coinf == 0   -2.00388    0.46620  -4.298 0.000104 ***
-    ## Mint.inf - Mori.coinf == 0    1.84416    0.45229   4.077 0.000238 ***
+    ## Mint.inf - Mint.coinf == 0   -0.11576    0.42047  -0.275 0.992430    
+    ## Mori.inf - Mint.coinf == 0   -2.00388    0.46620  -4.298  < 1e-04 ***
+    ## Mint.inf - Mori.coinf == 0    1.84416    0.45229   4.077 0.000295 ***
     ## Mori.inf - Mori.coinf == 0   -0.04397    0.48955  -0.090 0.999730    
-    ## Mori.inf - Mint.inf == 0     -1.88812    0.44834  -4.211 0.000135 ***
+    ## Mori.inf - Mint.inf == 0     -1.88812    0.44834  -4.211 0.000140 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -508,10 +508,6 @@ Anova(modSeq, type = 'III')
     ## Warning in RET$pfunction("adjusted", ...): Completion with error > abseps
     
     ## Warning in RET$pfunction("adjusted", ...): Completion with error > abseps
-    
-    ## Warning in RET$pfunction("adjusted", ...): Completion with error > abseps
-    
-    ## Warning in RET$pfunction("adjusted", ...): Completion with error > abseps
 
     ## 
     ##   Simultaneous Tests for General Linear Hypotheses
@@ -571,51 +567,51 @@ Anova(modSeq, type = 'III')
     ## Mori.inf2.single - Mori.inf1.single == 0       -0.81435    0.45388  -1.794
     ## Mori.inf2.single - Mori.inf2.heterolog == 0    -0.23746    0.48179  -0.493
     ##                                                Pr(>|z|)    
-    ## Mint.inf1.heterolog - Mint.homolog == 0         0.10904    
-    ## Mint.inf1.single - Mint.homolog == 0            0.14623    
-    ## Mint.inf2.heterolog - Mint.homolog == 0         1.00000    
-    ## Mint.inf2.single - Mint.homolog == 0            0.99651    
-    ## Mori.homolog - Mint.homolog == 0                0.88602    
-    ## Mori.inf1.heterolog - Mint.homolog == 0         0.43236    
-    ## Mori.inf1.single - Mint.homolog == 0            1.00000    
-    ## Mori.inf2.heterolog - Mint.homolog == 0         0.95144    
-    ## Mori.inf2.single - Mint.homolog == 0            0.65734    
-    ## Mint.inf1.single - Mint.inf1.heterolog == 0     1.00000    
-    ## Mint.inf2.heterolog - Mint.inf1.heterolog == 0  0.06729 .  
-    ## Mint.inf2.single - Mint.inf1.heterolog == 0     0.01106 *  
-    ## Mori.homolog - Mint.inf1.heterolog == 0         0.00116 ** 
-    ## Mori.inf1.heterolog - Mint.inf1.heterolog == 0  < 0.001 ***
-    ## Mori.inf1.single - Mint.inf1.heterolog == 0     0.10248    
-    ## Mori.inf2.heterolog - Mint.inf1.heterolog == 0  < 0.001 ***
-    ## Mori.inf2.single - Mint.inf1.heterolog == 0     < 0.001 ***
-    ## Mint.inf2.heterolog - Mint.inf1.single == 0     0.09104 .  
-    ## Mint.inf2.single - Mint.inf1.single == 0        0.01447 *  
-    ## Mori.homolog - Mint.inf1.single == 0            0.00132 ** 
-    ## Mori.inf1.heterolog - Mint.inf1.single == 0     < 0.001 ***
-    ## Mori.inf1.single - Mint.inf1.single == 0        0.13773    
-    ## Mori.inf2.heterolog - Mint.inf1.single == 0     0.00472 ** 
-    ## Mori.inf2.single - Mint.inf1.single == 0        < 0.001 ***
-    ## Mint.inf2.single - Mint.inf2.heterolog == 0     0.99997    
-    ## Mori.homolog - Mint.inf2.heterolog == 0         0.98629    
-    ## Mori.inf1.heterolog - Mint.inf2.heterolog == 0  0.14026    
-    ## Mori.inf1.single - Mint.inf2.heterolog == 0     1.00000    
-    ## Mori.inf2.heterolog - Mint.inf2.heterolog == 0  0.99616    
-    ## Mori.inf2.single - Mint.inf2.heterolog == 0     0.90747    
-    ## Mori.homolog - Mint.inf2.single == 0            0.99987    
-    ## Mori.inf1.heterolog - Mint.inf2.single == 0     0.93800    
-    ## Mori.inf1.single - Mint.inf2.single == 0        0.99844    
-    ## Mori.inf2.heterolog - Mint.inf2.single == 0     0.99999    
-    ## Mori.inf2.single - Mint.inf2.single == 0        0.99311    
-    ## Mori.inf1.heterolog - Mori.homolog == 0         0.99849    
-    ## Mori.inf1.single - Mori.homolog == 0            0.92202    
-    ## Mori.inf2.heterolog - Mori.homolog == 0         1.00000    
-    ## Mori.inf2.single - Mori.homolog == 0            1.00000    
-    ## Mori.inf1.single - Mori.inf1.heterolog == 0     0.50281    
-    ## Mori.inf2.heterolog - Mori.inf1.heterolog == 0  0.99653    
-    ## Mori.inf2.single - Mori.inf1.heterolog == 0     0.99999    
-    ## Mori.inf2.heterolog - Mori.inf1.single == 0     0.96917    
-    ## Mori.inf2.single - Mori.inf1.single == 0        0.72830    
-    ## Mori.inf2.single - Mori.inf2.heterolog == 0     0.99997    
+    ## Mint.inf1.heterolog - Mint.homolog == 0          0.1089    
+    ## Mint.inf1.single - Mint.homolog == 0             0.1456    
+    ## Mint.inf2.heterolog - Mint.homolog == 0          1.0000    
+    ## Mint.inf2.single - Mint.homolog == 0             0.9965    
+    ## Mori.homolog - Mint.homolog == 0                 0.8863    
+    ## Mori.inf1.heterolog - Mint.homolog == 0          0.4324    
+    ## Mori.inf1.single - Mint.homolog == 0             1.0000    
+    ## Mori.inf2.heterolog - Mint.homolog == 0          0.9514    
+    ## Mori.inf2.single - Mint.homolog == 0             0.6575    
+    ## Mint.inf1.single - Mint.inf1.heterolog == 0      1.0000    
+    ## Mint.inf2.heterolog - Mint.inf1.heterolog == 0   0.0668 .  
+    ## Mint.inf2.single - Mint.inf1.heterolog == 0      0.0113 *  
+    ## Mori.homolog - Mint.inf1.heterolog == 0           <0.01 ** 
+    ## Mori.inf1.heterolog - Mint.inf1.heterolog == 0    <0.01 ***
+    ## Mori.inf1.single - Mint.inf1.heterolog == 0      0.1034    
+    ## Mori.inf2.heterolog - Mint.inf1.heterolog == 0    <0.01 ***
+    ## Mori.inf2.single - Mint.inf1.heterolog == 0       <0.01 ***
+    ## Mint.inf2.heterolog - Mint.inf1.single == 0      0.0907 .  
+    ## Mint.inf2.single - Mint.inf1.single == 0         0.0143 *  
+    ## Mori.homolog - Mint.inf1.single == 0              <0.01 ** 
+    ## Mori.inf1.heterolog - Mint.inf1.single == 0       <0.01 ***
+    ## Mori.inf1.single - Mint.inf1.single == 0         0.1378    
+    ## Mori.inf2.heterolog - Mint.inf1.single == 0       <0.01 ** 
+    ## Mori.inf2.single - Mint.inf1.single == 0          <0.01 ***
+    ## Mint.inf2.single - Mint.inf2.heterolog == 0      1.0000    
+    ## Mori.homolog - Mint.inf2.heterolog == 0          0.9863    
+    ## Mori.inf1.heterolog - Mint.inf2.heterolog == 0   0.1403    
+    ## Mori.inf1.single - Mint.inf2.heterolog == 0      1.0000    
+    ## Mori.inf2.heterolog - Mint.inf2.heterolog == 0   0.9962    
+    ## Mori.inf2.single - Mint.inf2.heterolog == 0      0.9073    
+    ## Mori.homolog - Mint.inf2.single == 0             0.9999    
+    ## Mori.inf1.heterolog - Mint.inf2.single == 0      0.9379    
+    ## Mori.inf1.single - Mint.inf2.single == 0         0.9984    
+    ## Mori.inf2.heterolog - Mint.inf2.single == 0      1.0000    
+    ## Mori.inf2.single - Mint.inf2.single == 0         0.9931    
+    ## Mori.inf1.heterolog - Mori.homolog == 0          0.9985    
+    ## Mori.inf1.single - Mori.homolog == 0             0.9222    
+    ## Mori.inf2.heterolog - Mori.homolog == 0          1.0000    
+    ## Mori.inf2.single - Mori.homolog == 0             1.0000    
+    ## Mori.inf1.single - Mori.inf1.heterolog == 0      0.5026    
+    ## Mori.inf2.heterolog - Mori.inf1.heterolog == 0   0.9965    
+    ## Mori.inf2.single - Mori.inf1.heterolog == 0      1.0000    
+    ## Mori.inf2.heterolog - Mori.inf1.single == 0      0.9692    
+    ## Mori.inf2.single - Mori.inf1.single == 0         0.7283    
+    ## Mori.inf2.single - Mori.inf2.heterolog == 0      1.0000    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -627,13 +623,48 @@ Plotting Figure
 
     ## [1] "Using c(0.5,10.5) as input for xlim, note that default values for these dimensions are c(0.5,7)"
 
-![](/README_files/figure-gfm/Figure3-1.png)<!-- -->
+![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/Figure3-1.png)<!-- -->
 
 ## PART III: Host dependence of infectivity
 
 Tests whether the source species (mussel or oyster) has an effect on the
-infectitivity of parasite offspring in both
-species
+infectitivity of parasite offspring in both species
+
+Testing for cost of
+generalism
+
+``` r
+parasite.mod = glm(cbind(M_Total,(Cop_infiltrated-M_Total))~HostParasite, data = dataHostNoMiCG, family = 'binomial')
+summary(parasite.mod)
+```
+
+    ## 
+    ## Call:
+    ## glm(formula = cbind(M_Total, (Cop_infiltrated - M_Total)) ~ HostParasite, 
+    ##     family = "binomial", data = dataHostNoMiCG)
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -3.2296  -2.2090  -0.3385   1.0575   5.0613  
+    ## 
+    ## Coefficients:
+    ##                         Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)               0.4017     0.1369   2.933  0.00335 ** 
+    ## HostParasiteMo.M_edulis  -2.6795     0.2031 -13.192  < 2e-16 ***
+    ## HostParasiteMo.C_gigas   -2.5579     0.2061 -12.409  < 2e-16 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 456.63  on 50  degrees of freedom
+    ## Residual deviance: 212.94  on 48  degrees of freedom
+    ## AIC: 316.49
+    ## 
+    ## Number of Fisher Scoring iterations: 5
+
+Testing for host source
+dependence
 
 ``` r
 parental.mod = glm(cbind(M_Total,(Cop_infiltrated-M_Total))~Treatment, data = dataHostNoMiCG, family = 'binomial')
@@ -719,7 +750,7 @@ summary(hostMori.mod)
 Plotting Figure
 4
 
-![](/README_files/figure-gfm/Figure%204-1.png)<!-- -->
+![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/Figure%204-1.png)<!-- -->
 
 ## PART IV: Infection preference
 
@@ -783,4 +814,4 @@ summary(mod_hom_het)
 Plot Figure
 5
 
-![](/README_files/figure-gfm/Figure%205-1.png)<!-- -->
+![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/Figure%205-1.png)<!-- -->
