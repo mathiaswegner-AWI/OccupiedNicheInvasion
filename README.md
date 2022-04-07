@@ -6,8 +6,8 @@ Mathias Wegner, AWI
 ## R Markdown
 
 This is an R Markdown of the analyses accompanying the manuscript
-‘Invading the occupied niche: aggregation behavior gives a generalist
-parasite the edge over an established specialist’ by Marieke E. Feis,
+‘Invading the occupied niche: How a parasitic copepod of introduced
+oysters can expel a congener from native mussels’ by Marieke E. Feis,
 Leo Gottschalck, Lena Ruf, Franziska Theising, Felicitas Demann, K.
 Mathias Wegner.
 
@@ -113,7 +113,7 @@ summary(bestMod)
 Plot Figure 1
 B,C,D
 
-![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/Plot%201B,C,D-1.png)<!-- -->
+![](/README_files/figure-gfm/Plot%201B,C,D-1.png)<!-- -->
 
 Calculate dispersion and reproductive opportunities ‘M\_Mint\_abundance’
 is a sampling interval aggregate of M. intestinalis (Mint) abundances in
@@ -121,7 +121,7 @@ mussels (M), Mori is M. orientalis, and O is oyster. Different stats are
 calculated for each host parasite combination (M\_Mint, M\_mori,
 O\_Mori) For all 3 combinations data is merged into M-Mint\_abundance
 
-Analysis for Figure 2B: Aggregation in different parasite-host
+Analysis for Figure 3B: Aggregation in different parasite-host
 combinations
 
 ``` r
@@ -171,7 +171,7 @@ anova(fit.gls)
     ## (Intercept)     1 288.73189  <.0001
     ## hostPar         2   7.38559  0.0015
 
-Analysis Figure 2C: Chances of encountering a mate
+Analysis Figure 3C: Chances of encountering a mate
 
 ``` r
 #### prop Repro 2C
@@ -277,11 +277,11 @@ print(summary(O_mori_repro_mod))
     ## F-statistic: 7.807 on 1 and 8 DF,  p-value: 0.02341
 
 Plotting of Figure
-2
+3
 
-![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/plot%20Figure2-1.png)<!-- -->
+![](/README_files/figure-gfm/plot%20Figure2-1.png)<!-- -->
 
-## Part II: Simultaneous and Sequential infections (Fig 3A)
+## Part II: Simultaneous and Sequential infections (Fig 4)
 
 This part analyses the simultaneous and sequential infection data,
 corresponding to Figure 3 \#\#\# Simultaneous infections (Fig
@@ -392,11 +392,11 @@ print(summary(glht(compMod, linfct = mcp(PxT = 'Tukey'))))
     ## Linear Hypotheses:
     ##                              Estimate Std. Error z value Pr(>|z|)    
     ## Mori.coinf - Mint.coinf == 0 -1.95992    0.30020  -6.529  < 1e-04 ***
-    ## Mint.inf - Mint.coinf == 0   -0.11576    0.42047  -0.275 0.992430    
-    ## Mori.inf - Mint.coinf == 0   -2.00388    0.46620  -4.298  < 1e-04 ***
-    ## Mint.inf - Mori.coinf == 0    1.84416    0.45229   4.077 0.000295 ***
+    ## Mint.inf - Mint.coinf == 0   -0.11576    0.42047  -0.275 0.992431    
+    ## Mori.inf - Mint.coinf == 0   -2.00388    0.46620  -4.298 0.000112 ***
+    ## Mint.inf - Mori.coinf == 0    1.84416    0.45229   4.077 0.000249 ***
     ## Mori.inf - Mori.coinf == 0   -0.04397    0.48955  -0.090 0.999730    
-    ## Mori.inf - Mint.inf == 0     -1.88812    0.44834  -4.211 0.000140 ***
+    ## Mori.inf - Mint.inf == 0     -1.88812    0.44834  -4.211 0.000139 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -406,7 +406,7 @@ meanInf = aggregate( infRate2 ~ treatment*Parasite, data = dataSim, mean)
 meanSE = aggregate( infRate2 ~ treatment*Parasite, data = dataSim, se)
 ```
 
-### Sequential Infections (Fig 3B)
+### Sequential Infections (Fig 4B)
 
 ``` r
 #############################################################################################################
@@ -414,24 +414,86 @@ meanSE = aggregate( infRate2 ~ treatment*Parasite, data = dataSim, se)
 #############################################################################################################
 
 modSeq = glmer(cbind(inf,(dose-inf))~ Parasite * round * HomHet + (1|Mussel), data = dataSeq, family = 'binomial',control=glmerControl(optimizer="bobyqa",optCtrl=list(maxfun=2e5)))
-#summary(modSeq)
-Anova(modSeq, type = 'III')
+summary(modSeq)
 ```
 
-    ## Analysis of Deviance Table (Type III Wald chisquare tests)
+    ## Generalized linear mixed model fit by maximum likelihood (Laplace
+    ##   Approximation) [glmerMod]
+    ##  Family: binomial  ( logit )
+    ## Formula: cbind(inf, (dose - inf)) ~ Parasite * round * HomHet + (1 | Mussel)
+    ##    Data: dataSeq
+    ## Control: glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 2e+05))
     ## 
-    ## Response: cbind(inf, (dose - inf))
-    ##                         Chisq Df Pr(>Chisq)    
-    ## (Intercept)            7.6926  1  0.0055448 ** 
-    ## Parasite               7.4328  1  0.0064045 ** 
-    ## round                 12.1246  1  0.0004976 ***
-    ## HomHet                 0.2241  2  0.8940092    
-    ## Parasite:round         1.4622  1  0.2265838    
-    ## Parasite:HomHet        3.5664  2  0.1680971    
-    ## round:HomHet           3.6268  2  0.1631009    
-    ## Parasite:round:HomHet 10.0288  2  0.0066417 ** 
+    ##      AIC      BIC   logLik deviance df.resid 
+    ##    602.4    638.7   -288.2    576.4      107 
+    ## 
+    ## Scaled residuals: 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -2.53107 -0.58639 -0.05872  0.59034  2.81856 
+    ## 
+    ## Random effects:
+    ##  Groups Name        Variance Std.Dev.
+    ##  Mussel (Intercept) 0.7771   0.8815  
+    ## Number of obs: 120, groups:  Mussel, 80
+    ## 
+    ## Fixed effects:
+    ##                                        Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)                             0.88115    0.31770   2.774 0.005545 ** 
+    ## ParasiteMori                           -1.23849    0.45427  -2.726 0.006405 ** 
+    ## roundinf2                              -1.61039    0.46248  -3.482 0.000498 ***
+    ## HomHethomolog                          -0.09493    0.47385  -0.200 0.841223    
+    ## HomHetheterolog                         0.14151    0.47913   0.295 0.767723    
+    ## ParasiteMori:roundinf2                  0.79074    0.65394   1.209 0.226584    
+    ## ParasiteMori:HomHethomolog             -1.02098    0.69667  -1.466 0.142780    
+    ## ParasiteMori:HomHetheterolog           -1.17788    0.69099  -1.705 0.088263 .  
+    ## roundinf2:HomHethomolog                -0.87447    0.57649  -1.517 0.129297    
+    ## roundinf2:HomHetheterolog               0.10033    0.68194   0.147 0.883031    
+    ## ParasiteMori:roundinf2:HomHethomolog    2.57875    0.82277   3.134 0.001723 ** 
+    ## ParasiteMori:roundinf2:HomHetheterolog  1.17617    1.12477   1.046 0.295701    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
+    ##                      (Intr) PrstMr rndnf2 HmHthm HmHtht PrsM:2 PrstMr:HmHthm
+    ## ParasiteMor          -0.699                                                 
+    ## roundinf2            -0.689  0.482                                          
+    ## HomHethomlg          -0.670  0.468  0.460                                   
+    ## HomHethtrlg          -0.662  0.463  0.453  0.444                            
+    ## PrstMr:rnd2           0.486 -0.695 -0.705 -0.325 -0.321                     
+    ## PrstMr:HmHthm         0.455 -0.651 -0.311 -0.680 -0.303  0.452              
+    ## PrstMr:HmHtht         0.458 -0.656 -0.314 -0.308 -0.694  0.456  0.429       
+    ## rndnf2:HmHthm         0.551 -0.385 -0.799 -0.542 -0.365  0.565  0.368       
+    ## rndnf2:HmHtht         0.466 -0.326 -0.676 -0.312 -0.702  0.477  0.212       
+    ## PrstMr:rndnf2:HmHthm -0.385  0.551  0.558  0.380  0.256 -0.794 -0.572       
+    ## PrstMr:rndnf2:HmHtht -0.282  0.403  0.409  0.189  0.567 -0.581 -0.263       
+    ##                      PrstMr:HmHtht rndnf2:HmHthm rndnf2:HmHtht
+    ## ParasiteMor                                                   
+    ## roundinf2                                                     
+    ## HomHethomlg                                                   
+    ## HomHethtrlg                                                   
+    ## PrstMr:rnd2                                                   
+    ## PrstMr:HmHthm                                                 
+    ## PrstMr:HmHtht                                                 
+    ## rndnf2:HmHthm         0.253                                   
+    ## rndnf2:HmHtht         0.656         0.541                     
+    ## PrstMr:rndnf2:HmHthm -0.363        -0.700        -0.379       
+    ## PrstMr:rndnf2:HmHtht -0.814        -0.328        -0.809       
+    ##                      PrstMr:rndnf2:HmHthm
+    ## ParasiteMor                              
+    ## roundinf2                                
+    ## HomHethomlg                              
+    ## HomHethtrlg                              
+    ## PrstMr:rnd2                              
+    ## PrstMr:HmHthm                            
+    ## PrstMr:HmHtht                            
+    ## rndnf2:HmHthm                            
+    ## rndnf2:HmHtht                            
+    ## PrstMr:rndnf2:HmHthm                     
+    ## PrstMr:rndnf2:HmHtht  0.462
+
+``` r
+#Anova(modSeq, type = 'III')
+```
 
 ### Pairwise comparisons of Sequential infections
 
@@ -508,6 +570,8 @@ Anova(modSeq, type = 'III')
     ## Warning in RET$pfunction("adjusted", ...): Completion with error > abseps
     
     ## Warning in RET$pfunction("adjusted", ...): Completion with error > abseps
+    
+    ## Warning in RET$pfunction("adjusted", ...): Completion with error > abseps
 
     ## 
     ##   Simultaneous Tests for General Linear Hypotheses
@@ -567,28 +631,28 @@ Anova(modSeq, type = 'III')
     ## Mori.inf2.single - Mori.inf1.single == 0       -0.81435    0.45388  -1.794
     ## Mori.inf2.single - Mori.inf2.heterolog == 0    -0.23746    0.48179  -0.493
     ##                                                Pr(>|z|)    
-    ## Mint.inf1.heterolog - Mint.homolog == 0          0.1089    
-    ## Mint.inf1.single - Mint.homolog == 0             0.1456    
+    ## Mint.inf1.heterolog - Mint.homolog == 0          0.1091    
+    ## Mint.inf1.single - Mint.homolog == 0             0.1461    
     ## Mint.inf2.heterolog - Mint.homolog == 0          1.0000    
     ## Mint.inf2.single - Mint.homolog == 0             0.9965    
-    ## Mori.homolog - Mint.homolog == 0                 0.8863    
-    ## Mori.inf1.heterolog - Mint.homolog == 0          0.4324    
+    ## Mori.homolog - Mint.homolog == 0                 0.8860    
+    ## Mori.inf1.heterolog - Mint.homolog == 0          0.4317    
     ## Mori.inf1.single - Mint.homolog == 0             1.0000    
     ## Mori.inf2.heterolog - Mint.homolog == 0          0.9514    
-    ## Mori.inf2.single - Mint.homolog == 0             0.6575    
+    ## Mori.inf2.single - Mint.homolog == 0             0.6573    
     ## Mint.inf1.single - Mint.inf1.heterolog == 0      1.0000    
-    ## Mint.inf2.heterolog - Mint.inf1.heterolog == 0   0.0668 .  
-    ## Mint.inf2.single - Mint.inf1.heterolog == 0      0.0113 *  
+    ## Mint.inf2.heterolog - Mint.inf1.heterolog == 0   0.0677 .  
+    ## Mint.inf2.single - Mint.inf1.heterolog == 0      0.0111 *  
     ## Mori.homolog - Mint.inf1.heterolog == 0           <0.01 ** 
     ## Mori.inf1.heterolog - Mint.inf1.heterolog == 0    <0.01 ***
-    ## Mori.inf1.single - Mint.inf1.heterolog == 0      0.1034    
+    ## Mori.inf1.single - Mint.inf1.heterolog == 0      0.1020    
     ## Mori.inf2.heterolog - Mint.inf1.heterolog == 0    <0.01 ***
     ## Mori.inf2.single - Mint.inf1.heterolog == 0       <0.01 ***
-    ## Mint.inf2.heterolog - Mint.inf1.single == 0      0.0907 .  
-    ## Mint.inf2.single - Mint.inf1.single == 0         0.0143 *  
+    ## Mint.inf2.heterolog - Mint.inf1.single == 0      0.0912 .  
+    ## Mint.inf2.single - Mint.inf1.single == 0         0.0142 *  
     ## Mori.homolog - Mint.inf1.single == 0              <0.01 ** 
     ## Mori.inf1.heterolog - Mint.inf1.single == 0       <0.01 ***
-    ## Mori.inf1.single - Mint.inf1.single == 0         0.1378    
+    ## Mori.inf1.single - Mint.inf1.single == 0         0.1375    
     ## Mori.inf2.heterolog - Mint.inf1.single == 0       <0.01 ** 
     ## Mori.inf2.single - Mint.inf1.single == 0          <0.01 ***
     ## Mint.inf2.single - Mint.inf2.heterolog == 0      1.0000    
@@ -596,34 +660,34 @@ Anova(modSeq, type = 'III')
     ## Mori.inf1.heterolog - Mint.inf2.heterolog == 0   0.1403    
     ## Mori.inf1.single - Mint.inf2.heterolog == 0      1.0000    
     ## Mori.inf2.heterolog - Mint.inf2.heterolog == 0   0.9962    
-    ## Mori.inf2.single - Mint.inf2.heterolog == 0      0.9073    
+    ## Mori.inf2.single - Mint.inf2.heterolog == 0      0.9074    
     ## Mori.homolog - Mint.inf2.single == 0             0.9999    
-    ## Mori.inf1.heterolog - Mint.inf2.single == 0      0.9379    
+    ## Mori.inf1.heterolog - Mint.inf2.single == 0      0.9378    
     ## Mori.inf1.single - Mint.inf2.single == 0         0.9984    
     ## Mori.inf2.heterolog - Mint.inf2.single == 0      1.0000    
     ## Mori.inf2.single - Mint.inf2.single == 0         0.9931    
     ## Mori.inf1.heterolog - Mori.homolog == 0          0.9985    
-    ## Mori.inf1.single - Mori.homolog == 0             0.9222    
+    ## Mori.inf1.single - Mori.homolog == 0             0.9221    
     ## Mori.inf2.heterolog - Mori.homolog == 0          1.0000    
     ## Mori.inf2.single - Mori.homolog == 0             1.0000    
-    ## Mori.inf1.single - Mori.inf1.heterolog == 0      0.5026    
+    ## Mori.inf1.single - Mori.inf1.heterolog == 0      0.5025    
     ## Mori.inf2.heterolog - Mori.inf1.heterolog == 0   0.9965    
     ## Mori.inf2.single - Mori.inf1.heterolog == 0      1.0000    
     ## Mori.inf2.heterolog - Mori.inf1.single == 0      0.9692    
-    ## Mori.inf2.single - Mori.inf1.single == 0         0.7283    
+    ## Mori.inf2.single - Mori.inf1.single == 0         0.7286    
     ## Mori.inf2.single - Mori.inf2.heterolog == 0      1.0000    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
 
 Plotting Figure
-    3
+    4
 
     ## [1] "Using c(0.5,4) as input for xlim, note that default values for these dimensions are c(0.5,2.5)"
 
     ## [1] "Using c(0.5,10.5) as input for xlim, note that default values for these dimensions are c(0.5,7)"
 
-![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/Figure3-1.png)<!-- -->
+![](/README_files/figure-gfm/Figure3-1.png)<!-- -->
 
 ## PART III: Host dependence of infectivity
 
@@ -748,9 +812,9 @@ summary(hostMori.mod)
     ## Number of Fisher Scoring iterations: 5
 
 Plotting Figure
-4
+5
 
-![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/Figure%204-1.png)<!-- -->
+![](/README_files/figure-gfm/Figure%204-1.png)<!-- -->
 
 ## PART IV: Infection preference
 
@@ -812,6 +876,6 @@ summary(mod_hom_het)
     ## F-statistic: 4.029 on 4 and 38 DF,  p-value: 0.008053
 
 Plot Figure
-5
+6
 
-![](/Users/mwegner/Documents/Publication/MariekeLeoLena_MytilicolaCompetition/Data/OccupiedNicheInvasion/README_files/figure-gfm/Figure%205-1.png)<!-- -->
+![](/README_files/figure-gfm/Figure%205-1.png)<!-- -->
